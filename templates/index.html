@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CampusHire — SMD College</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0f1729;--navy2:#162040;--navy3:#1e2d5a;
+  --blue:#2563eb;--blue2:#3b82f6;--blue3:#60a5fa;
+  --gold:#f59e0b;--gold2:#fbbf24;
+  --green:#10b981;--red:#ef4444;--purple:#8b5cf6;
+  --dark:#080e1e;--border:#1e2d5a;--border2:#263570;
+  --text:#e2e8ff;--text2:#8899cc;--text3:#4a5a8a;
+  --card:#111827;--card2:#162040;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:3px}
+
+/* ══ AUTH ══ */
+.auth-page{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;z-index:100}
+.auth-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(37,99,235,0.12) 0%,transparent 55%),radial-gradient(ellipse at 80% 30%,rgba(245,158,11,0.07) 0%,transparent 50%)}
+.auth-wrap{position:relative;z-index:1;width:100%;max-width:460px}
+.auth-brand{text-align:center;margin-bottom:32px}
+.brand-icon{width:76px;height:76px;background:linear-gradient(135deg,var(--navy3),var(--blue));border-radius:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:36px;box-shadow:0 0 40px rgba(37,99,235,0.35)}
+.brand-name{font-size:32px;font-weight:900;color:#fff;letter-spacing:-1px}
+.brand-sub{color:var(--text3);font-size:12px;margin-top:6px;letter-spacing:2px;text-transform:uppercase}
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px}
+.auth-tabs{display:flex;background:var(--dark);border-radius:12px;padding:4px;margin-bottom:28px;gap:3px}
+.auth-tab{flex:1;padding:10px;border-radius:9px;border:none;background:transparent;color:var(--text3);font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;transition:all 0.2s;letter-spacing:0.3px}
+.auth-tab.active{background:linear-gradient(135deg,var(--navy3),var(--blue));color:#fff;box-shadow:0 4px 14px rgba(37,99,235,0.3)}
+.a-field{margin-bottom:15px}
+.a-field label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px}
+.a-input{width:100%;padding:11px 14px;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;outline:none;font-family:inherit;transition:border 0.2s}
+.a-input:focus{border-color:var(--blue2)}
+.a-input.invalid{border-color:var(--red)}
+.a-input::placeholder{color:var(--text3)}
+.a-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pass-wrap{position:relative}
+.pass-wrap .a-input{padding-right:42px}
+.pass-eye{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px}
+.a-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--navy3),var(--blue));color:#fff;border:none;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;margin-top:6px;letter-spacing:0.3px;box-shadow:0 4px 20px rgba(37,99,235,0.35);transition:all 0.2s}
+.a-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(37,99,235,0.45)}
+.role-tabs{display:flex;gap:8px;margin-bottom:20px}
+.role-tab{flex:1;padding:10px 8px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:var(--text3);font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;text-align:center;transition:all 0.2s}
+.role-tab.active{border-color:var(--blue2);color:var(--blue3);background:rgba(37,99,235,0.1)}
+.demo-box{margin-top:18px;background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.15);border-radius:12px;padding:14px}
+.demo-title{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.demo-box p{font-size:12px;color:var(--text2);line-height:2.2}
+.demo-box b{color:var(--blue3)}
+.a-alert{border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:14px;display:none}
+.a-alert.error{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.a-alert.success{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.2)}
+.email-hint{font-size:11px;margin-top:3px;display:none}
+.email-hint.show{display:block}
+.email-hint.ok{color:var(--green)}.email-hint.err{color:var(--red)}
+
+/* ══ APP LAYOUT ══ */
+.app{display:none;min-height:100vh}
+.sidebar{width:256px;background:var(--navy);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto}
+.sb-brand{padding:22px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.sb-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--navy3),var(--blue));border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sb-name{font-size:18px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+.sb-sub{font-size:10px;color:var(--blue3);font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.sb-section{padding:16px 14px 6px;font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1.5px}
+.sb-nav{padding:0 8px}
+.nav-btn{width:100%;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;border:none;cursor:pointer;background:transparent;color:var(--text3);font-weight:600;font-size:13px;margin-bottom:2px;border-left:3px solid transparent;font-family:inherit;text-align:left;transition:all 0.15s}
+.nav-btn:hover{color:var(--text);background:rgba(255,255,255,0.04)}
+.nav-btn.active{background:rgba(37,99,235,0.12);color:var(--blue3);border-left-color:var(--blue2)}
+.nav-btn .n-badge{margin-left:auto;background:var(--red);color:#fff;border-radius:20px;padding:2px 7px;font-size:10px;font-weight:800}
+.nav-btn .n-badge.gold{background:var(--gold)}
+.sb-bottom{margin-top:auto;padding:14px 8px}
+.user-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.user-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.user-ava{width:38px;height:38px;background:linear-gradient(135deg,var(--navy3),var(--blue));border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;flex-shrink:0}
+.user-name{font-size:13px;color:var(--text);font-weight:700;margin-bottom:3px}
+.role-chip{display:inline-block;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.chip-admin{background:rgba(245,158,11,0.15);color:var(--gold2)}
+.chip-student{background:rgba(16,185,129,0.15);color:var(--green)}
+.chip-company{background:rgba(37,99,235,0.15);color:var(--blue3)}
+.signout-btn{width:100%;padding:8px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);border-radius:9px;color:var(--red);font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.signout-btn:hover{background:rgba(239,68,68,0.15)}
+
+/* ══ MAIN ══ */
+.main{margin-left:256px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--navy);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.3px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.live-pill{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--text2);font-weight:600}
+.dot-g{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+.content{flex:1;padding:28px;background:var(--dark)}
+
+/* ══ PAGES ══ */
+.page{display:none}.page.active{display:block}
+.pg-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.pg-title{font-size:24px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+.pg-sub{color:var(--text3);font-size:13px;margin-top:3px}
+
+/* ══ STATS ══ */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;align-items:center;gap:14px;transition:all 0.2s}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.stat-ico{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.stat-val{font-size:28px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px}
+.stat-lbl{font-size:12px;color:var(--text2);margin-top:3px;font-weight:600}
+.stat-sub{font-size:11px;margin-top:3px;font-weight:600}
+
+/* ══ CARDS ══ */
+.drive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.drive-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;transition:all 0.2s}
+.drive-card:hover{border-color:var(--border2);box-shadow:0 8px 24px rgba(37,99,235,0.1)}
+.dc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.dc-company{font-size:16px;font-weight:800;color:#fff}
+.dc-role{font-size:13px;color:var(--text2);margin-top:2px}
+.dc-ctc{font-size:22px;font-weight:900;color:var(--green);letter-spacing:-0.5px}
+.dc-ctc-lbl{font-size:10px;color:var(--text3);font-weight:600}
+.dc-tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tag{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.tag-blue{background:rgba(37,99,235,0.12);color:var(--blue3);border:1px solid rgba(37,99,235,0.2)}
+.tag-gold{background:rgba(245,158,11,0.12);color:var(--gold2);border:1px solid rgba(245,158,11,0.2)}
+.tag-green{background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.2)}
+.tag-red{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.tag-purple{background:rgba(139,92,246,0.12);color:var(--purple);border:1px solid rgba(139,92,246,0.2)}
+.tag-gray{background:rgba(100,100,100,0.15);color:var(--text3)}
+.dc-info{display:flex;gap:16px;font-size:12px;color:var(--text3);margin-bottom:14px;flex-wrap:wrap}
+.dc-info span{display:flex;align-items:center;gap:4px}
+.dc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border)}
+.dc-date{font-size:11px;color:var(--text3)}
+.dc-date b{color:var(--red);font-weight:700}
+
+/* ══ TABLE ══ */
+.tbl-box{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.tbl-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.tbl-head-title{font-size:15px;font-weight:800;color:#fff}
+.tbl-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+thead tr{background:rgba(37,99,235,0.06)}
+th{padding:12px 16px;text-align:left;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 16px;border-bottom:1px solid rgba(30,45,90,0.5);font-size:13px;color:var(--text2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.015)}
+.td-bold{font-weight:700;color:var(--text)}
+.td-name-row{display:flex;align-items:center;gap:9px}
+.td-ava{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--navy3),var(--blue));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.no-data{padding:44px;text-align:center;color:var(--text3);font-size:14px}
+.act-row{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ══ BADGES ══ */
+.badge{border-radius:20px;padding:3px 11px;font-size:11px;font-weight:700;display:inline-block}
+.b-applied{background:rgba(37,99,235,0.12);color:var(--blue3)}
+.b-shortlisted{background:rgba(245,158,11,0.12);color:var(--gold2)}
+.b-interview{background:rgba(139,92,246,0.12);color:var(--purple)}
+.b-selected{background:rgba(16,185,129,0.12);color:var(--green)}
+.b-rejected{background:rgba(239,68,68,0.1);color:var(--red)}
+.b-pending{background:rgba(245,158,11,0.12);color:var(--gold2)}
+.b-approved{background:rgba(16,185,129,0.12);color:var(--green)}
+.b-open{background:rgba(16,185,129,0.12);color:var(--green)}
+.b-closed{background:rgba(100,100,100,0.15);color:var(--text3)}
+.b-high{background:rgba(239,68,68,0.1);color:var(--red)}
+.b-normal{background:rgba(37,99,235,0.1);color:var(--blue3)}
+
+/* ══ BUTTONS ══ */
+.btn{padding:9px 18px;border:none;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;transition:all 0.15s;letter-spacing:0.2px}
+.btn-blue{background:linear-gradient(135deg,var(--navy3),var(--blue));color:#fff;box-shadow:0 3px 10px rgba(37,99,235,0.3)}
+.btn-blue:hover{transform:translateY(-1px)}
+.btn-ghost{background:var(--card2);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
+.btn-green{background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.25)}
+.btn-red{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.btn-gold{background:rgba(245,158,11,0.12);color:var(--gold2);border:1px solid rgba(245,158,11,0.2)}
+.btn-purple{background:rgba(139,92,246,0.12);color:var(--purple);border:1px solid rgba(139,92,246,0.2)}
+.btn-sm{padding:5px 11px;font-size:11px;border-radius:7px}
+
+/* ══ MODAL ══ */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.modal-ov.show{display:flex}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:22px;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;box-shadow:0 28px 70px rgba(0,0,0,0.5)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:22px 26px 0}
+.modal-title{font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.3px}
+.modal-x{border:none;background:var(--card2);border-radius:9px;width:32px;height:32px;cursor:pointer;color:var(--text2);font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-x:hover{background:var(--border);color:var(--text)}
+.modal-body{padding:20px 26px 26px}
+.m-field{margin-bottom:14px}
+.m-field label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px}
+.m-input{width:100%;padding:10px 13px;background:var(--dark);border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;outline:none;font-family:inherit;transition:border 0.2s;box-sizing:border-box}
+.m-input:focus{border-color:var(--blue2)}
+.m-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.m-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.m-alert{border-radius:9px;padding:9px 13px;font-size:13px;font-weight:600;margin-bottom:13px;display:none}
+.m-alert.error{background:rgba(239,68,68,0.1);color:var(--red)}
+.m-alert.success{background:rgba(16,185,129,0.1);color:var(--green)}
+.branch-checks{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.branch-check{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--text2);font-weight:600;transition:all 0.15s}
+.branch-check:hover{border-color:var(--blue2);color:var(--text)}
+.branch-check input{accent-color:var(--blue2);width:14px;height:14px}
+
+/* ══ NOTICE CARD ══ */
+.notice-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;display:flex;gap:14px}
+.notice-card.high-priority{border-left:3px solid var(--red)}
+.notice-icon{font-size:24px;flex-shrink:0}
+.notice-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:4px}
+.notice-content{font-size:13px;color:var(--text2);line-height:1.6}
+.notice-meta{font-size:11px;color:var(--text3);margin-top:6px}
+
+/* ══ PROGRESS STEPPER ══ */
+.stepper{display:flex;align-items:center;gap:0;margin:12px 0}
+.step{display:flex;align-items:center;gap:0;flex:1}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;border:2px solid var(--border)}
+.step-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.step-dot.active{background:var(--blue);border-color:var(--blue);color:#fff;animation:blink 2s infinite}
+.step-dot.pending{background:transparent;border-color:var(--border);color:var(--text3)}
+.step-line{flex:1;height:2px;background:var(--border)}
+.step-line.done{background:var(--green)}
+.step-label{font-size:10px;color:var(--text3);margin-top:4px;text-align:center}
+
+/* ══ PROFILE CARD ══ */
+.profile-hero{background:linear-gradient(135deg,var(--navy3),var(--navy2));border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:20px;display:flex;align-items:flex-start;gap:20px}
+.profile-ava{width:72px;height:72px;background:linear-gradient(135deg,var(--navy3),var(--blue));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#fff;flex-shrink:0}
+.profile-name{font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+.profile-meta{color:var(--text2);font-size:13px;margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+.profile-meta span{display:flex;align-items:center;gap:4px}
+
+/* ══ DASHBOARD GRID ══ */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+.dash-card-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.dash-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(30,45,90,0.5)}
+.dash-row:last-child{border-bottom:none}
+
+/* ══ SEARCH ══ */
+.search-input{background:var(--dark);border:1.5px solid var(--border);border-radius:9px;padding:8px 13px;color:var(--text);font-size:13px;outline:none;font-family:inherit;width:200px;transition:all 0.2s}
+.search-input:focus{border-color:var(--blue2);width:240px}
+
+/* ══ STAT BAR ══ */
+.stat-bar-row{display:flex;align-items:center;gap:10px;margin:7px 0}
+.sbl{min-width:90px;font-size:12px;color:var(--text2);font-weight:600}
+.sbt{flex:1;background:var(--card2);border-radius:5px;height:9px;overflow:hidden}
+.sbf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--navy3),var(--blue2));transition:width 0.8s ease}
+.sbc{min-width:26px;font-size:12px;color:var(--text3);text-align:right;font-weight:600}
+
+/* ══ TOAST ══ */
+#toastWrap{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{background:var(--card);border-left:4px solid var(--blue);border-radius:12px;padding:12px 16px;min-width:270px;box-shadow:0 8px 28px rgba(0,0,0,0.4);display:flex;align-items:center;gap:9px;color:var(--text);font-size:13px;font-weight:600;animation:tIn 0.3s ease}
+.toast.success{border-left-color:var(--green)}
+.toast.error{border-left-color:var(--red)}
+.toast.warn{border-left-color:var(--gold)}
+@keyframes tIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ══ OFFER LETTER ══ */
+.offer-card{background:linear-gradient(135deg,var(--navy2),var(--navy3));border:1px solid var(--blue);border-radius:18px;padding:24px;margin-bottom:14px}
+.offer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.offer-company{font-size:18px;font-weight:900;color:#fff}
+.offer-role{font-size:13px;color:var(--text2);margin-top:3px}
+.offer-ctc{font-size:26px;font-weight:900;color:var(--green);letter-spacing:-1px}
+.offer-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.offer-info-item label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.offer-info-item div{font-size:13px;color:var(--text);font-weight:600;margin-top:2px}
+</style>
+</head>
+<body>
+<div id="toastWrap"></div>
+
+<!-- ══════════ AUTH ══════════ -->
+<div class="auth-page" id="authPage">
+  <div class="auth-bg"></div>
+  <div class="auth-wrap">
+    <div class="auth-brand">
+      <div class="brand-icon">🎓</div>
+      <div class="brand-name">CampusHire</div>
+      <div class="brand-sub">SMD College • Placement Portal</div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" onclick="switchAuthTab('signup')">Register</button>
+      </div>
+      <div id="aAlert" class="a-alert"></div>
+
+      <!-- Signup fields -->
+      <div id="signupExtra" style="display:none">
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Register As</div>
+          <div class="role-tabs">
+            <button class="role-tab active" id="roleTabStudent" onclick="setRegRole('student')">🎓 Student</button>
+            <button class="role-tab" id="roleTabCompany" onclick="setRegRole('company')">🏢 Company HR</button>
+          </div>
+        </div>
+        <div class="a-2col">
+          <div class="a-field"><label>Full Name *</label><input class="a-input" id="sName" placeholder="Your full name"></div>
+          <div class="a-field"><label>Phone *</label><input class="a-input" id="sPhone" placeholder="10-digit number"></div>
+        </div>
+        <!-- Student fields -->
+        <div id="studentFields">
+          <div class="a-2col">
+            <div class="a-field"><label>Branch *</label>
+              <select class="a-input" id="sBranch">
+                <option value="">Select Branch</option>
+                <option>BCA</option><option>Computer Science</option><option>Information Technology</option>
+                <option>Electronics</option><option>Mechanical</option><option>Civil</option><option>MBA</option><option>MCA</option>
+              </select>
+            </div>
+            <div class="a-field"><label>CGPA *</label><input class="a-input" id="sCgpa" type="number" placeholder="e.g. 8.5" step="0.1" min="0" max="10"></div>
+          </div>
+        </div>
+        <!-- Company fields -->
+        <div id="companyFields" style="display:none">
+          <div class="a-field"><label>Company Name *</label><input class="a-input" id="sCompany" placeholder="Company full name"></div>
+          <div class="a-2col">
+            <div class="a-field"><label>Industry</label><input class="a-input" id="sIndustry" placeholder="e.g. IT Services"></div>
+            <div class="a-field"><label>Website</label><input class="a-input" id="sWebsite" placeholder="https://..."></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="a-field">
+        <label>Email Address *</label>
+        <input class="a-input" id="aEmail" placeholder="name@gmail.com" oninput="chkEmail()" onkeydown="if(event.key==='Enter')doAuth()">
+        <div class="email-hint" id="emailHint"></div>
+      </div>
+      <div class="a-field">
+        <label>Password *</label>
+        <div class="pass-wrap">
+          <input class="a-input" id="aPass" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')doAuth()">
+          <button class="pass-eye" onclick="togglePass()">👁</button>
+        </div>
+      </div>
+      <div id="otpField" style="display:none;margin-bottom:6px">
+        <label style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px">Enter OTP *</label>
+        <input class="a-input" id="otpInput" placeholder="6-digit OTP from your email" maxlength="6" style="letter-spacing:6px;font-size:22px;font-weight:800;text-align:center">
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">Check your inbox — OTP valid for 10 minutes</div>
+      </div>
+      <button class="a-btn" onclick="doAuth()" id="aBtn">Sign In →</button>
+      <div class="demo-box" id="demoBox">
+        <div class="demo-title">Demo Accounts</div>
+        <p>👑 <b>Admin:</b> tpo@smd.edu.in / admin123</p>
+        <p>🏢 <b>Company:</b> kalalindu951@gmail.com / hr123</p>
+        <p>🎓 <b>Student:</b> kavya@gmail.com / stu123</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div class="app" id="appWrap">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-icon">🎓</div>
+      <div>
+        <div class="sb-name">CampusHire</div>
+        <div class="sb-sub">SMD College</div>
+      </div>
+    </div>
+
+    <div class="sb-section">Main</div>
+    <div class="sb-nav">
+      <button class="nav-btn active" onclick="showPage('dashboard',this)">📊 Dashboard</button>
+      <button class="nav-btn" onclick="showPage('drives',this)">🚀 Placement Drives</button>
+      <button class="nav-btn" onclick="showPage('notices',this)">📢 Notice Board</button>
+    </div>
+
+    <div class="sb-section" id="sbSectionApp">Applications</div>
+    <div class="sb-nav" id="sbNavApp">
+      <button class="nav-btn" id="navMyApps" onclick="showPage('myapps',this)">📋 My Applications</button>
+      <button class="nav-btn" id="navAllApps" style="display:none" onclick="showPage('allapps',this)">📋 All Applications</button>
+      <button class="nav-btn" id="navOffers" onclick="showPage('offers',this)">🏆 Offer Letters</button>
+    </div>
+
+    <div class="sb-section" id="sbSectionAdmin" style="display:none">Manage</div>
+    <div class="sb-nav" id="sbNavAdmin" style="display:none">
+      <button class="nav-btn" onclick="showPage('companies',this)">🏢 Companies <span class="n-badge gold" id="pendingBadge" style="display:none">!</span></button>
+      <button class="nav-btn" onclick="showPage('students',this)">🎓 Students</button>
+      <button class="nav-btn" onclick="showPage('reports',this)">📈 Reports</button>
+    </div>
+
+    <div class="sb-section" id="sbSectionProfile">Profile</div>
+    <div class="sb-nav">
+      <button class="nav-btn" id="navProfile" onclick="showPage('profile',this)">👤 My Profile</button>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="user-card">
+        <div class="user-row">
+          <div class="user-ava" id="userAva">A</div>
+          <div>
+            <div class="user-name" id="userName">User</div>
+            <span class="role-chip" id="roleChip">role</span>
+          </div>
+        </div>
+        <button class="signout-btn" onclick="logout()">🚪 Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topTitle">Dashboard</div>
+      <div class="topbar-right">
+        <div class="live-pill"><span class="dot-g"></span><span id="liveText">Campus Hiring Portal</span></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="page active" id="page-dashboard">
+        <div class="pg-header">
+          <div><div class="pg-title" id="dashWelcome">Dashboard</div><div class="pg-sub">Your placement activity overview</div></div>
+        </div>
+        <div class="stats-row" id="dashStats"></div>
+        <div class="dash-grid" id="dashGrid"></div>
+      </div>
+
+      <!-- ══ DRIVES ══ -->
+      <div class="page" id="page-drives">
+        <div class="pg-header">
+          <div><div class="pg-title">🚀 Placement Drives</div><div class="pg-sub" id="drivesSubtitle">Browse open drives</div></div>
+          <div style="display:flex;gap:8px">
+            <select class="search-input" id="driveFilter" onchange="loadDrives()" style="width:auto">
+              <option value="">All Status</option>
+              <option value="Open">Open</option>
+              <option value="Closed">Closed</option>
+            </select>
+            <button class="btn btn-blue" id="addDriveBtn" style="display:none" onclick="openModal('drive')">➕ Post Drive</button>
+          </div>
+        </div>
+        <div class="drive-grid" id="drivesGrid"></div>
+        <div id="drivesEmpty" class="no-data" style="display:none;background:var(--card);border-radius:16px">No drives available yet.</div>
+      </div>
+
+      <!-- ══ MY APPLICATIONS ══ -->
+      <div class="page" id="page-myapps">
+        <div class="pg-header">
+          <div><div class="pg-title">📋 My Applications</div><div class="pg-sub">Track all your job applications</div></div>
+        </div>
+        <div id="myAppsGrid"></div>
+      </div>
+
+      <!-- ══ ALL APPLICATIONS (Admin + Company) ══ -->
+      <div class="page" id="page-allapps">
+        <div class="pg-header">
+          <div><div class="pg-title">📋 Applications</div><div class="pg-sub">Review and manage all applications</div></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select class="search-input" id="appFilter" style="width:auto" onchange="loadAllApps()">
+              <option value="">All Status</option>
+              <option value="Applied">Applied</option>
+              <option value="Shortlisted">Shortlisted</option>
+              <option value="Interview">Interview</option>
+              <option value="Selected">Selected</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+            <input class="search-input" id="appSearch" placeholder="🔍 Search..." oninput="filterTbl('appsTbody',this.value)">
+          </div>
+        </div>
+        <div class="tbl-box">
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>Student</th><th>Company</th><th>Role</th><th>CGPA</th><th>Branch</th><th>Status</th><th>Applied</th><th>Actions</th></tr></thead>
+              <tbody id="appsTbody"></tbody>
+            </table>
+            <div id="appsEmpty" class="no-data" style="display:none">No applications found.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ OFFERS ══ -->
+      <div class="page" id="page-offers">
+        <div class="pg-header">
+          <div><div class="pg-title">🏆 Offer Letters</div><div class="pg-sub">Placement confirmations</div></div>
+          <button class="btn btn-blue" id="issueOfferBtn" style="display:none" onclick="openModal('offer')">🏆 Issue Offer</button>
+        </div>
+        <div id="offersContainer"></div>
+        <div id="offersEmpty" class="no-data" style="display:none;background:var(--card);border-radius:16px">No offer letters yet.</div>
+      </div>
+
+      <!-- ══ COMPANIES ══ -->
+      <div class="page" id="page-companies">
+        <div class="pg-header">
+          <div><div class="pg-title">🏢 Companies</div><div class="pg-sub">Manage company registrations</div></div>
+          <input class="search-input" placeholder="🔍 Search..." oninput="filterTbl('compTbody',this.value)">
+        </div>
+        <div class="tbl-box">
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>Company</th><th>Industry</th><th>HR Contact</th><th>Email</th><th>Website</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="compTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ STUDENTS ══ -->
+      <div class="page" id="page-students">
+        <div class="pg-header">
+          <div><div class="pg-title">🎓 Students</div><div class="pg-sub">Registered student database</div></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select class="search-input" id="stuFilter" style="width:auto" onchange="loadStudents()">
+              <option value="">All Students</option>
+              <option value="placed">Placed</option>
+              <option value="unplaced">Unplaced</option>
+            </select>
+            <input class="search-input" placeholder="🔍 Search..." oninput="filterTbl('stuTbody',this.value)">
+          </div>
+        </div>
+        <div class="tbl-box">
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>Student</th><th>Branch</th><th>CGPA</th><th>Skills</th><th>Status</th><th>Company</th><th>CTC</th></tr></thead>
+              <tbody id="stuTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ NOTICES ══ -->
+      <div class="page" id="page-notices">
+        <div class="pg-header">
+          <div><div class="pg-title">📢 Notice Board</div><div class="pg-sub">Placement announcements & updates</div></div>
+          <button class="btn btn-blue" id="addNoticeBtn" style="display:none" onclick="openModal('notice')">📢 Post Notice</button>
+        </div>
+        <div id="noticesContainer"></div>
+        <div id="noticesEmpty" class="no-data" style="display:none;background:var(--card);border-radius:16px">No notices posted yet.</div>
+      </div>
+
+      <!-- ══ PROFILE ══ -->
+      <div class="page" id="page-profile">
+        <div class="pg-header">
+          <div><div class="pg-title">👤 My Profile</div><div class="pg-sub">Manage your information</div></div>
+          <button class="btn btn-blue" id="editProfileBtn" onclick="openModal('profile')">✏️ Edit Profile</button>
+        </div>
+        <div id="profileContent"></div>
+      </div>
+
+      <!-- ══ REPORTS ══ -->
+      <div class="page" id="page-reports">
+        <div class="pg-header">
+          <div><div class="pg-title">📈 Placement Reports</div><div class="pg-sub">Analytics and statistics</div></div>
+        </div>
+        <div class="stats-row" id="reportStats"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+          <div class="dash-card"><div class="dash-card-title">🎓 Branch-wise Placement</div><div id="branchChart"></div></div>
+          <div class="dash-card"><div class="dash-card-title">🏢 Company-wise Hiring</div><div id="companyChart"></div></div>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end main -->
+</div><!-- end app -->
+
+<!-- ══════════ MODALS ══════════ -->
+
+<!-- POST DRIVE -->
+<div class="modal-ov" id="modal-drive">
+  <div class="modal-box" style="max-width:600px">
+    <div class="modal-head"><div class="modal-title">🚀 Post Placement Drive</div><button class="modal-x" onclick="closeModal('drive')">✕</button></div>
+    <div class="modal-body">
+      <div class="m-alert" id="driveAlert"></div>
+      <input type="hidden" id="editDriveId">
+      <div class="m-2col">
+        <div class="m-field"><label>Job Role *</label><input class="m-input" id="dRole" placeholder="e.g. Software Engineer"></div>
+        <div class="m-field"><label>CTC / Package *</label><input class="m-input" id="dCtc" placeholder="e.g. 4.5 LPA"></div>
+      </div>
+      <div class="m-2col">
+        <div class="m-field"><label>Job Type</label>
+          <select class="m-input" id="dType"><option>Full-time</option><option>Internship</option><option>Part-time</option><option>Contract</option></select>
+        </div>
+        <div class="m-field"><label>Location</label><input class="m-input" id="dLoc" placeholder="e.g. Bangalore, Pune"></div>
+      </div>
+      <div class="m-2col">
+        <div class="m-field"><label>Min CGPA *</label><input class="m-input" id="dCgpa" type="number" placeholder="e.g. 6.5" step="0.1" min="0" max="10"></div>
+        <div class="m-field"><label>Last Date to Apply *</label><input class="m-input" id="dLastDate" type="date"></div>
+      </div>
+      <div class="m-field"><label>Drive Date</label><input class="m-input" id="dDriveDate" type="date"></div>
+      <div class="m-field"><label>Eligible Branches *</label>
+        <div class="branch-checks" id="branchChecks">
+          <label class="branch-check"><input type="checkbox" value="BCA"> BCA</label>
+          <label class="branch-check"><input type="checkbox" value="Computer Science"> Computer Science</label>
+          <label class="branch-check"><input type="checkbox" value="Information Technology"> Information Technology</label>
+          <label class="branch-check"><input type="checkbox" value="Electronics"> Electronics</label>
+          <label class="branch-check"><input type="checkbox" value="Mechanical"> Mechanical</label>
+          <label class="branch-check"><input type="checkbox" value="Civil"> Civil</label>
+          <label class="branch-check"><input type="checkbox" value="MBA"> MBA</label>
+          <label class="branch-check"><input type="checkbox" value="MCA"> MCA</label>
+        </div>
+      </div>
+      <div class="m-field"><label>Selection Rounds</label><input class="m-input" id="dRounds" placeholder="e.g. Aptitude Test, Technical Interview, HR"></div>
+      <div class="m-field"><label>Job Description</label><textarea class="m-input" id="dDesc" rows="3" placeholder="Brief description of the role..."></textarea></div>
+      <div class="m-footer">
+        <button class="btn btn-ghost" onclick="closeModal('drive')">Cancel</button>
+        <button class="btn btn-blue" onclick="saveDrive()" id="saveDriveBtn">🚀 Post Drive</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UPDATE APPLICATION STATUS -->
+<div class="modal-ov" id="modal-appStatus">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-head"><div class="modal-title">📋 Update Application</div><button class="modal-x" onclick="closeModal('appStatus')">✕</button></div>
+    <div class="modal-body">
+      <div class="m-alert" id="appStatusAlert"></div>
+      <input type="hidden" id="updateAppId">
+      <div id="appStatusInfo" style="background:var(--dark);border-radius:12px;padding:14px;margin-bottom:14px;font-size:13px;color:var(--text2)"></div>
+      <div class="m-field"><label>Update Status *</label>
+        <select class="m-input" id="appStatusVal" onchange="toggleInterviewFields()">
+          <option value="Shortlisted">🎯 Shortlisted</option>
+          <option value="Interview">📅 Call for Interview</option>
+          <option value="Selected">🏆 Selected</option>
+          <option value="Rejected">❌ Rejected</option>
+        </select>
+      </div>
+      <div class="m-field"><label>Round Name</label><input class="m-input" id="appRound" placeholder="e.g. Technical Interview, HR Round"></div>
+      <div id="interviewFields" style="display:none">
+        <div class="m-2col">
+          <div class="m-field"><label>Date & Time</label><input class="m-input" id="appDateTime" placeholder="e.g. 25 Apr 2026, 10:00 AM"></div>
+          <div class="m-field"><label>Venue</label><input class="m-input" id="appVenue" placeholder="e.g. Placement Cell, SMD College"></div>
+        </div>
+        <div class="m-field"><label>Instructions</label><input class="m-input" id="appInstr" placeholder="Carry resume, ID proof..."></div>
+      </div>
+      <div class="m-field"><label>Message to Student</label><input class="m-input" id="appMsg" placeholder="Optional message..."></div>
+      <div class="m-footer">
+        <button class="btn btn-ghost" onclick="closeModal('appStatus')">Cancel</button>
+        <button class="btn btn-blue" onclick="submitAppStatus()">✅ Update & Notify</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ISSUE OFFER LETTER -->
+<div class="modal-ov" id="modal-offer">
+  <div class="modal-box" style="max-width:500px">
+    <div class="modal-head"><div class="modal-title">🏆 Issue Offer Letter</div><button class="modal-x" onclick="closeModal('offer')">✕</button></div>
+    <div class="modal-body">
+      <div class="m-alert" id="offerAlert"></div>
+      <div class="m-field"><label>Select Student *</label>
+        <select class="m-input" id="offerStudent"><option value="">-- Select Student --</option></select>
+      </div>
+      <div class="m-2col">
+        <div class="m-field"><label>Role / Position *</label><input class="m-input" id="offerRole" placeholder="e.g. Software Engineer"></div>
+        <div class="m-field"><label>CTC / Package *</label><input class="m-input" id="offerCtc" placeholder="e.g. 4.5 LPA"></div>
+      </div>
+      <div class="m-field"><label>Joining Date *</label><input class="m-input" id="offerJoining" type="date"></div>
+      <div class="m-footer">
+        <button class="btn btn-ghost" onclick="closeModal('offer')">Cancel</button>
+        <button class="btn btn-green" onclick="submitOffer()">🏆 Issue & Send Email</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POST NOTICE -->
+<div class="modal-ov" id="modal-notice">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-head"><div class="modal-title">📢 Post Notice</div><button class="modal-x" onclick="closeModal('notice')">✕</button></div>
+    <div class="modal-body">
+      <div class="m-alert" id="noticeAlert"></div>
+      <div class="m-field"><label>Title *</label><input class="m-input" id="noticeTitle" placeholder="Notice heading"></div>
+      <div class="m-field"><label>Content *</label><textarea class="m-input" id="noticeContent" rows="4" placeholder="Notice details..."></textarea></div>
+      <div class="m-field"><label>Priority</label>
+        <select class="m-input" id="noticePriority"><option value="Normal">Normal</option><option value="High">🔴 High Priority</option></select>
+      </div>
+      <div class="m-footer">
+        <button class="btn btn-ghost" onclick="closeModal('notice')">Cancel</button>
+        <button class="btn btn-blue" onclick="submitNotice()">📢 Post Notice</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PROFILE -->
+<div class="modal-ov" id="modal-profile">
+  <div class="modal-box">
+    <div class="modal-head"><div class="modal-title">✏️ Edit Profile</div><button class="modal-x" onclick="closeModal('profile')">✕</button></div>
+    <div class="modal-body">
+      <div class="m-alert" id="profileAlert"></div>
+      <div class="m-2col">
+        <div class="m-field"><label>Branch</label>
+          <select class="m-input" id="pBranch">
+            <option value="">Select</option>
+            <option>BCA</option><option>Computer Science</option><option>Information Technology</option>
+            <option>Electronics</option><option>Mechanical</option><option>Civil</option><option>MBA</option><option>MCA</option>
+          </select>
+        </div>
+        <div class="m-field"><label>CGPA</label><input class="m-input" id="pCgpa" type="number" step="0.1" placeholder="e.g. 8.5"></div>
+      </div>
+      <div class="m-field"><label>Skills (comma separated)</label><input class="m-input" id="pSkills" placeholder="Python, Flask, React, SQL..."></div>
+      <div class="m-field"><label>Projects</label><input class="m-input" id="pProjects" placeholder="Project names..."></div>
+      <div class="m-field"><label>Internships</label><input class="m-input" id="pInternships" placeholder="Company — Role..."></div>
+      <div class="m-field"><label>Achievements</label><input class="m-input" id="pAchievements" placeholder="Awards, certifications..."></div>
+      <div class="m-2col">
+        <div class="m-field"><label>LinkedIn</label><input class="m-input" id="pLinkedin" placeholder="linkedin.com/in/..."></div>
+        <div class="m-field"><label>GitHub</label><input class="m-input" id="pGithub" placeholder="github.com/..."></div>
+      </div>
+      <div class="m-footer">
+        <button class="btn btn-ghost" onclick="closeModal('profile')">Cancel</button>
+        <button class="btn btn-blue" onclick="saveProfile()">💾 Save Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let CU = null; // current user
+let allStudentsCache = [];
+
+const STATUS_STEPS = ["Applied","Shortlisted","Interview","Selected"];
+
+// ── EMAIL VALIDATION ──
+function isValidEmail(e){return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(e.trim())}
+function chkEmail(){
+  const v=document.getElementById("aEmail").value.trim();
+  const h=document.getElementById("emailHint");
+  const i=document.getElementById("aEmail");
+  if(!v){h.className="email-hint";i.classList.remove("invalid");return;}
+  if(isValidEmail(v)){h.textContent="✅ Valid email";h.className="email-hint show ok";i.classList.remove("invalid");}
+  else{h.textContent="❌ Invalid — use format: name@gmail.com";h.className="email-hint show err";i.classList.add("invalid");}
+}
+
+// ── TOAST ──
+function toast(msg,type="success"){
+  const t=document.createElement("div");
+  t.className="toast "+type;
+  const i={success:"✅",error:"❌",warn:"⚠️"};
+  t.innerHTML=`<span>${i[type]||"ℹ️"}</span> ${msg}`;
+  document.getElementById("toastWrap").appendChild(t);
+  setTimeout(()=>t.remove(),3800);
+}
+
+// ── AUTH ──
+let regRole = "student";
+function setRegRole(r){
+  regRole=r;
+  document.getElementById("roleTabStudent").classList.toggle("active",r==="student");
+  document.getElementById("roleTabCompany").classList.toggle("active",r==="company");
+  document.getElementById("studentFields").style.display=r==="student"?"block":"none";
+  document.getElementById("companyFields").style.display=r==="company"?"block":"none";
+}
+function switchAuthTab(tab){
+  const isLogin=tab==="login";
+  otpSent = false;
+  document.getElementById("otpField").style.display="none";
+  document.getElementById("aBtn").textContent=tab==="login"?"Sign In →":"Create Account →";
+  document.getElementById("otpInput").value="";
+  document.querySelectorAll(".auth-tab").forEach((t,i)=>t.classList.toggle("active",(isLogin&&i===0)||(!isLogin&&i===1)));
+  document.getElementById("signupExtra").style.display=isLogin?"none":"block";
+  document.getElementById("demoBox").style.display=isLogin?"block":"none";
+  document.getElementById("aBtn").textContent=isLogin?"Sign In →":"Create Account →";
+  document.getElementById("aAlert").style.display="none";
+  document.getElementById("emailHint").className="email-hint";
+}
+function togglePass(){const i=document.getElementById("aPass");i.type=i.type==="password"?"text":"password";}
+
+let otpSent = false;
+
+async function doAuth(){
+  const email=document.getElementById("aEmail").value.trim();
+  const pass=document.getElementById("aPass").value;
+  const al=document.getElementById("aAlert");
+  if(!isValidEmail(email)){
+    al.textContent="⚠️ Please enter a valid email! (e.g. name@gmail.com)";
+    al.className="a-alert error";al.style.display="block";
+    document.getElementById("aEmail").classList.add("invalid");return;
+  }
+  const isLogin=document.getElementById("aBtn").textContent.includes("Sign In");
+  if(isLogin){
+    const r=await fetch("/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pass})}).then(r=>r.json());
+    if(r.ok) initApp();
+    else{al.textContent="⚠️ "+r.msg;al.className="a-alert error";al.style.display="block";}
+  } else {
+    const name=document.getElementById("sName").value.trim();
+    const phone=document.getElementById("sPhone").value.trim();
+
+    if(!otpSent){
+      // STEP 1 — Send OTP
+      if(!name||!phone){
+        al.textContent="⚠️ Please fill all required fields!";
+        al.className="a-alert error";al.style.display="block";return;
+      }
+      const body={name,email,password:pass,phone,role:regRole};
+      if(regRole==="student"){
+        body.branch=document.getElementById("sBranch").value;
+        body.cgpa=document.getElementById("sCgpa").value;
+        if(!body.branch||!body.cgpa){
+          al.textContent="⚠️ Branch and CGPA required!";
+          al.className="a-alert error";al.style.display="block";return;
+        }
+      } else {
+        body.company_name=document.getElementById("sCompany").value.trim();
+        body.industry=document.getElementById("sIndustry").value.trim();
+        body.website=document.getElementById("sWebsite").value.trim();
+        if(!body.company_name){
+          al.textContent="⚠️ Company name required!";
+          al.className="a-alert error";al.style.display="block";return;
+        }
+      }
+      const r=await fetch("/signup/send-otp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(r=>r.json());
+      if(r.ok){
+        otpSent=true;
+        document.getElementById("otpField").style.display="block";
+        document.getElementById("aBtn").textContent="✅ Verify OTP & Register →";
+        al.textContent="✅ OTP sent to "+email+"! Check your inbox.";
+        al.className="a-alert success";al.style.display="block";
+      } else {
+        al.textContent="⚠️ "+r.msg;al.className="a-alert error";al.style.display="block";
+      }
+    } else {
+      // STEP 2 — Verify OTP
+      const otp=document.getElementById("otpInput").value.trim();
+      if(!otp||otp.length<6){
+        al.textContent="⚠️ Please enter the 6-digit OTP!";
+        al.className="a-alert error";al.style.display="block";return;
+      }
+      const r=await fetch("/signup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,otp})}).then(r=>r.json());
+      if(r.ok){
+        otpSent=false;
+        document.getElementById("otpField").style.display="none";
+        document.getElementById("otpInput").value="";
+        al.textContent="✅ Account created! OTP verified. Please sign in.";
+        al.className="a-alert success";al.style.display="block";
+        switchAuthTab("login");
+      } else {
+        al.textContent="⚠️ "+r.msg;al.className="a-alert error";al.style.display="block";
+      }
+    }
+  }
+}
+
+async function initApp(){
+  const s=await fetch("/api/session").then(r=>r.json());
+  if(!s.logged_in) return;
+  CU=s;
+  document.getElementById("authPage").style.display="none";
+  document.getElementById("appWrap").style.display="flex";
+  document.getElementById("userName").textContent=s.name;
+  document.getElementById("userAva").textContent=s.name[0];
+  document.getElementById("roleChip").textContent=s.role;
+  document.getElementById("roleChip").className="role-chip chip-"+s.role;
+  document.getElementById("dashWelcome").textContent=`Welcome, ${s.name.split(" ")[0]}! 👋`;
+  // Role-based UI
+  if(s.role==="admin"){
+    document.getElementById("sbSectionAdmin").style.display="block";
+    document.getElementById("sbNavAdmin").style.display="block";
+    document.getElementById("navMyApps").style.display="none";
+    document.getElementById("navAllApps").style.display="flex";
+    document.getElementById("issueOfferBtn").style.display="flex";
+    document.getElementById("addNoticeBtn").style.display="flex";
+    document.getElementById("liveText").textContent="TPO Admin Panel";
+  } else if(s.role==="company"){
+    document.getElementById("navMyApps").style.display="none";
+    document.getElementById("navAllApps").style.display="flex";
+    document.getElementById("addDriveBtn").style.display="flex";
+    document.getElementById("issueOfferBtn").style.display="flex";
+    document.getElementById("editProfileBtn").style.display="none";
+    document.getElementById("liveText").textContent="Company HR Portal";
+  } else {
+    document.getElementById("liveText").textContent="Student Portal — "+s.name;
+  }
+  loadDashboard();
+  checkPendingApprovals();
+}
+
+// ── SHOW PAGE ──
+function showPage(name,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("page-"+name).classList.add("active");
+  if(btn) btn.classList.add("active");
+  const titles={dashboard:"Dashboard",drives:"Placement Drives",myapps:"My Applications",allapps:"Applications",offers:"Offer Letters",companies:"Companies",students:"Students",notices:"Notice Board",profile:"My Profile",reports:"Reports"};
+  document.getElementById("topTitle").textContent=titles[name]||name;
+  const loaders={dashboard:loadDashboard,drives:loadDrives,myapps:loadMyApps,allapps:loadAllApps,offers:loadOffers,companies:loadCompanies,students:loadStudents,notices:loadNotices,profile:loadProfile,reports:loadReports};
+  if(loaders[name]) loaders[name]();
+}
+
+// ── DASHBOARD ──
+async function loadDashboard(){
+  const d=await fetch("/api/dashboard").then(r=>r.json());
+  const role=CU.role;
+  if(role==="admin"){
+    document.getElementById("dashStats").innerHTML=`
+      ${stBox("rgba(37,99,235,0.12)","🎓",d.total_students,"Students","registered","#60a5fa")}
+      ${stBox("rgba(16,185,129,0.12)","✅",d.total_placed,"Placed","students","#10b981")}
+      ${stBox("rgba(139,92,246,0.12)","🚀",d.total_drives,"Open Drives","active","#8b5cf6")}
+      ${stBox("rgba(245,158,11,0.12)","🏢",d.total_companies,"Companies","approved","#f59e0b")}
+      ${d.pending_approvals>0?stBox("rgba(239,68,68,0.1)","⏳",d.pending_approvals,"Pending","approvals","#ef4444"):""}`;
+    document.getElementById("dashGrid").innerHTML=`
+      <div class="dash-card">
+        <div class="dash-card-title">📋 Recent Applications</div>
+        ${d.recent_apps.length?d.recent_apps.map(a=>`
+          <div class="dash-row">
+            <div><div style="font-weight:700;font-size:13px;color:var(--text)">${a.student_name}</div>
+            <div style="font-size:11px;color:var(--text3)">${a.company_name} · ${a.role}</div></div>
+            <span class="badge b-${a.status.toLowerCase()}">${a.status}</span>
+          </div>`).join(""):"<div class='no-data' style='padding:16px 0;font-size:13px'>No applications yet.</div>"}
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">🏢 Top Companies by Applications</div>
+        ${d.top_companies.length?d.top_companies.map(c=>`
+          <div class="dash-row">
+            <div style="font-weight:700;font-size:13px;color:var(--text)">${c.company_name}</div>
+            <span style="color:var(--blue3);font-weight:800">${c.cnt} apps</span>
+          </div>`).join(""):"<div class='no-data' style='padding:16px 0;font-size:13px'>No data yet.</div>"}
+      </div>`;
+  } else if(role==="student"){
+    document.getElementById("dashStats").innerHTML=`
+      ${stBox("rgba(37,99,235,0.12)","📋",d.my_apps,"Applications","submitted","#60a5fa")}
+      ${stBox("rgba(245,158,11,0.12)","🎯",d.shortlisted,"Shortlisted","so far","#f59e0b")}
+      ${stBox("rgba(16,185,129,0.12)","🏆",d.selected,"Selected","offers","#10b981")}
+      ${stBox("rgba(139,92,246,0.12)","🚀",d.open_drives,"Open Drives","available","#8b5cf6")}`;
+    document.getElementById("dashGrid").innerHTML=`
+      <div class="dash-card">
+        <div class="dash-card-title">📋 Recent Applications</div>
+        ${d.recent_apps.length?d.recent_apps.map(a=>`
+          <div class="dash-row">
+            <div><div style="font-weight:700;font-size:13px;color:var(--text)">${a.company_name}</div>
+            <div style="font-size:11px;color:var(--text3)">${a.role}</div></div>
+            <span class="badge b-${a.status.toLowerCase()}">${a.status}</span>
+          </div>`).join(""):"<div class='no-data' style='padding:16px 0;font-size:13px'>No applications yet. Browse drives!</div>"}
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">📢 Latest Notices</div>
+        ${d.notices.length?d.notices.map(n=>`
+          <div class="dash-row">
+            <div><div style="font-weight:700;font-size:13px;color:var(--text)">${n.title}</div>
+            <div style="font-size:11px;color:var(--text3)">${n.created_on}</div></div>
+            ${n.priority==="High"?`<span class="badge b-high">High</span>`:""}
+          </div>`).join(""):"<div class='no-data' style='padding:16px 0;font-size:13px'>No notices.</div>"}
+      </div>`;
+  } else if(role==="company"){
+    document.getElementById("dashStats").innerHTML=`
+      ${stBox("rgba(37,99,235,0.12)","🚀",d.total_drives||0,"Drives Posted","total","#60a5fa")}
+      ${stBox("rgba(245,158,11,0.12)","📋",d.total_apps||0,"Applications","received","#f59e0b")}
+      ${stBox("rgba(139,92,246,0.12)","🎯",d.shortlisted||0,"Shortlisted","candidates","#8b5cf6")}
+      ${stBox("rgba(16,185,129,0.12)","🏆",d.selected||0,"Selected","hired","#10b981")}`;
+    document.getElementById("dashGrid").innerHTML=`
+      <div class="dash-card">
+        <div class="dash-card-title">📋 Recent Applications</div>
+        ${(d.recent_apps||[]).length?(d.recent_apps).map(a=>`
+          <div class="dash-row">
+            <div><div style="font-weight:700;font-size:13px;color:var(--text)">${a.student_name}</div>
+            <div style="font-size:11px;color:var(--text3)">${a.role}</div></div>
+            <span class="badge b-${a.status.toLowerCase()}">${a.status}</span>
+          </div>`).join(""):"<div class='no-data' style='padding:16px 0;font-size:13px'>No applications yet.</div>"}
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">💡 Quick Actions</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+          <button class="btn btn-blue" onclick="showPage('drives',null)">🚀 Post New Drive</button>
+          <button class="btn btn-ghost" onclick="showPage('allapps',null)">📋 Review Applications</button>
+          <button class="btn btn-green" onclick="openModal('offer')">🏆 Issue Offer Letter</button>
+        </div>
+      </div>`;
+  }
+}
+function stBox(bg,icon,val,label,sub,color){
+  return `<div class="stat-card"><div class="stat-ico" style="background:${bg}">${icon}</div><div><div class="stat-val">${val}</div><div class="stat-lbl">${label}</div><div class="stat-sub" style="color:${color}">${sub}</div></div></div>`;
+}
+
+// ── DRIVES ──
+async function loadDrives(){
+  const filter=document.getElementById("driveFilter")?.value||"";
+  const drives=await fetch("/api/drives").then(r=>r.json());
+  const filtered=filter?drives.filter(d=>d.status===filter):drives;
+  const grid=document.getElementById("drivesGrid");
+  const empty=document.getElementById("drivesEmpty");
+  if(!filtered.length){grid.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";
+  grid.innerHTML=filtered.map(d=>driveCard(d)).join("");
+}
+function driveCard(d){
+  const isCompany=CU.role==="company";
+  const isAdmin=CU.role==="admin";
+  const isStudent=CU.role==="student";
+  return `<div class="drive-card">
+    <div class="dc-top">
+      <div>
+        <div class="dc-company">${d.company_name}</div>
+        <div class="dc-role">${d.role} · <span style="color:var(--blue3)">${d.job_type}</span></div>
+      </div>
+      <div style="text-align:right">
+        <div class="dc-ctc">${d.ctc}</div>
+        <div class="dc-ctc-lbl">Package</div>
+      </div>
+    </div>
+    <div class="dc-tags">
+      <span class="tag tag-blue">📍 ${d.location||"Multiple"}</span>
+      <span class="tag tag-gold">🎓 Min CGPA: ${d.min_cgpa}</span>
+      <span class="tag ${d.status==="Open"?"tag-green":"tag-gray"}">${d.status==="Open"?"🟢":"🔴"} ${d.status}</span>
+    </div>
+    ${d.rounds?`<div style="font-size:12px;color:var(--text3);margin-bottom:8px">📋 Rounds: ${d.rounds}</div>`:""}
+    <div class="dc-info">
+      <span>🎓 ${d.branches||"All Branches"}</span>
+    </div>
+    <div class="dc-footer">
+      <div class="dc-date">Last Date: <b>${d.last_date}</b>${d.drive_date?` · Drive: ${d.drive_date}`:""}</div>
+      <div style="display:flex;gap:6px">
+        ${isStudent&&d.status==="Open"?
+          d.applied?`<span class="tag tag-green">✅ Applied</span>`:
+          d.eligible?`<button class="btn btn-blue btn-sm" onclick="applyDrive('${d.id}')">Apply Now</button>`:
+          `<span class="tag tag-gray">Not Eligible</span>`:""}
+        ${(isCompany||isAdmin)&&d.status==="Open"?`<button class="btn btn-ghost btn-sm" onclick="closeDrive('${d.id}')">Close</button>`:""}
+        ${isCompany?`<button class="btn btn-ghost btn-sm" onclick="editDrive('${d.id}')">✏️</button><button class="btn btn-red btn-sm" onclick="deleteDrive('${d.id}')">🗑️</button>`:""}
+      </div>
+    </div>
+  </div>`;
+}
+async function applyDrive(did){
+  const r=await fetch(`/api/apply/${did}`,{method:"POST"}).then(r=>r.json());
+  if(r.ok){toast("Applied successfully! 🎉","success");loadDrives();loadDashboard();}
+  else toast(r.msg,"error");
+}
+async function closeDrive(did){
+  await fetch(`/api/drives/${did}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({role:"",ctc:"",location:"",min_cgpa:6,description:"",last_date:"",drive_date:"",status:"Closed",rounds:""})});
+  toast("Drive closed","warn");loadDrives();
+}
+async function deleteDrive(did){
+  if(!confirm("Delete this drive?"))return;
+  await fetch(`/api/drives/${did}`,{method:"DELETE"});
+  toast("Drive deleted","warn");loadDrives();
+}
+
+async function saveDrive(){
+  const eid=document.getElementById("editDriveId").value;
+  const branches=[...document.querySelectorAll("#branchChecks input:checked")].map(i=>i.value);
+  if(!branches.length){showMAlert("driveAlert","Select at least one branch!");return;}
+  const data={
+    role:document.getElementById("dRole").value.trim(),
+    ctc:document.getElementById("dCtc").value.trim(),
+    job_type:document.getElementById("dType").value,
+    location:document.getElementById("dLoc").value.trim(),
+    min_cgpa:document.getElementById("dCgpa").value,
+    last_date:new Date(document.getElementById("dLastDate").value).toLocaleDateString("en-GB"),
+    drive_date:document.getElementById("dDriveDate").value?new Date(document.getElementById("dDriveDate").value).toLocaleDateString("en-GB"):"",
+    rounds:document.getElementById("dRounds").value.trim(),
+    description:document.getElementById("dDesc").value.trim(),
+    branches,status:"Open"
+  };
+  if(!data.role||!data.ctc||!data.min_cgpa||!data.last_date){showMAlert("driveAlert","Fill all required fields!");return;}
+  if(eid){await fetch(`/api/drives/${eid}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});toast("Drive updated!","success");}
+  else{const r=await fetch("/api/drives",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}).then(r=>r.json());
+    if(r.ok) toast("Drive posted! Eligible students notified 📧","success");
+    else{showMAlert("driveAlert",r.msg);return;}
+  }
+  closeModal("drive");loadDrives();loadDashboard();
+}
+
+function editDrive(id){
+  // simplified edit — open modal with id
+  document.getElementById("editDriveId").value=id;
+  document.getElementById("saveDriveBtn").textContent="💾 Save Changes";
+  document.getElementById("modal-drive").classList.add("show");
+}
+
+// ── MY APPLICATIONS (Student) ──
+async function loadMyApps(){
+  const apps=await fetch("/api/applications").then(r=>r.json());
+  const cont=document.getElementById("myAppsGrid");
+  if(!apps.length){cont.innerHTML=`<div class="no-data" style="background:var(--card);border-radius:16px">No applications yet. Browse placement drives!</div>`;return;}
+  cont.innerHTML=apps.map(a=>{
+    const stepIdx=STATUS_STEPS.indexOf(a.status);
+    const steps=STATUS_STEPS.map((s,i)=>`
+      <div class="step">
+        <div><div class="step-dot ${i<stepIdx?"done":i===stepIdx?"active":"pending"}">${i<stepIdx?"✓":i+1}</div></div>
+        ${i<STATUS_STEPS.length-1?`<div class="step-line ${i<stepIdx?"done":""}"></div>`:""}
+      </div>`).join("");
+    return `<div class="tbl-box" style="margin-bottom:14px;border-radius:16px">
+      <div style="padding:18px 20px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+          <div>
+            <div style="font-size:16px;font-weight:800;color:#fff">${a.company_name}</div>
+            <div style="font-size:13px;color:var(--text2);margin-top:2px">${a.role} · Applied: ${a.applied_on}</div>
+          </div>
+          <span class="badge b-${a.status.toLowerCase()}">${a.status}</span>
+        </div>
+        <div class="stepper">${steps}</div>
+        ${a.hr_message?`<div style="background:var(--dark);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--text2);margin-top:12px">💬 ${a.hr_message}</div>`:""}
+        ${a.current_round?`<div style="font-size:12px;color:var(--purple);margin-top:8px;font-weight:600">📋 Current Round: ${a.current_round}</div>`:""}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ── ALL APPLICATIONS (Admin + Company) ──
+async function loadAllApps(){
+  const filter=document.getElementById("appFilter")?.value||"";
+  const apps=await fetch("/api/applications").then(r=>r.json());
+  const filtered=filter?apps.filter(a=>a.status===filter):apps;
+  const tbody=document.getElementById("appsTbody");
+  const empty=document.getElementById("appsEmpty");
+  if(!filtered.length){tbody.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";
+  tbody.innerHTML=filtered.map(a=>`
+    <tr>
+      <td><div class="td-name-row"><div class="td-ava">${a.student_name[0]}</div><div class="td-bold">${a.student_name}</div></div></td>
+      <td class="td-bold">${a.company_name}</td>
+      <td>${a.role}</td>
+      <td style="color:var(--green);font-weight:700">${a.cgpa||"—"}</td>
+      <td>${a.branch||"—"}</td>
+      <td><span class="badge b-${a.status.toLowerCase()}">${a.status}</span></td>
+      <td style="color:var(--text3);font-size:12px">${a.applied_on}</td>
+      <td>
+        ${a.status!=="Selected"&&a.status!=="Rejected"?`
+          <div class="act-row">
+            <button class="btn btn-gold btn-sm" onclick="openUpdateApp('${a.id}','${a.student_name}','${a.company_name}','${a.role}')">📋 Update</button>
+            ${CU.role==="admin"||CU.role==="company"?`<button class="btn btn-green btn-sm" onclick="quickOffer('${a.student_id||a.id}','${a.student_name}','${a.company_name}','${a.role}')">🏆</button>`:""}
+          </div>`:"—"}
+      </td>
+    </tr>`).join("");
+}
+
+function openUpdateApp(aid,sname,company,role){
+  document.getElementById("updateAppId").value=aid;
+  document.getElementById("appStatusInfo").innerHTML=`<b style="color:#fff">${sname}</b> → ${company} · ${role}`;
+  document.getElementById("appStatusAlert").style.display="none";
+  document.getElementById("appRound").value="";
+  document.getElementById("appMsg").value="";
+  document.getElementById("modal-appStatus").classList.add("show");
+}
+function toggleInterviewFields(){
+  const v=document.getElementById("appStatusVal").value;
+  document.getElementById("interviewFields").style.display=v==="Interview"?"block":"none";
+}
+async function submitAppStatus(){
+  const aid=document.getElementById("updateAppId").value;
+  const status=document.getElementById("appStatusVal").value;
+  const round=document.getElementById("appRound").value.trim();
+  const msg=document.getElementById("appMsg").value.trim();
+  const dt=document.getElementById("appDateTime")?.value||"";
+  const venue=document.getElementById("appVenue")?.value||"Placement Cell, SMD College";
+  const instr=document.getElementById("appInstr")?.value||"";
+  await fetch(`/api/applications/${aid}/update`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({status,round,message:msg,datetime:dt,venue,instructions:instr})});
+  closeModal("appStatus");
+  toast(`Application ${status}! Student notified via email 📧`,status==="Rejected"?"warn":"success");
+  loadAllApps();loadDashboard();
+}
+
+function quickOffer(sid,sname,company,role){
+  document.getElementById("offerStudent").value=sid;
+  document.getElementById("offerRole").value=role;
+  openModal("offer");
+}
+
+// ── OFFERS ──
+async function loadOffers(){
+  const offers=await fetch("/api/offers").then(r=>r.json());
+  const cont=document.getElementById("offersContainer");
+  const empty=document.getElementById("offersEmpty");
+  if(!offers.length){cont.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";
+  cont.innerHTML=offers.map(o=>`
+    <div class="offer-card">
+      <div class="offer-top">
+        <div>
+          <div class="offer-company">${o.company_name}</div>
+          <div class="offer-role">${o.role}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="offer-ctc">${o.ctc}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">Annual Package</div>
+        </div>
+      </div>
+      <div class="offer-info">
+        <div class="offer-info-item"><label>Student</label><div>${o.student_name}</div></div>
+        <div class="offer-info-item"><label>Offer ID</label><div>${o.id}</div></div>
+        <div class="offer-info-item"><label>Joining Date</label><div>${o.joining_date}</div></div>
+        <div class="offer-info-item"><label>Issued On</label><div>${o.issued_on}</div></div>
+      </div>
+    </div>`).join("");
+  // Populate offer student dropdown
+  if(CU.role==="admin"||CU.role==="company"){
+    const stus=await fetch("/api/students").then(r=>r.json());
+    const sel=document.getElementById("offerStudent");
+    sel.innerHTML=`<option value="">-- Select Student --</option>`+stus.filter(s=>!s.placed).map(s=>`<option value="${s.user_id}">${s.name} (${s.blood_group||s.branch||""}) — CGPA: ${s.cgpa}</option>`).join("");
+  }
+}
+
+async function submitOffer(){
+  const sid=document.getElementById("offerStudent").value;
+  const role=document.getElementById("offerRole").value.trim();
+  const ctc=document.getElementById("offerCtc").value.trim();
+  const joining=document.getElementById("offerJoining").value;
+  if(!sid||!role||!ctc||!joining){showMAlert("offerAlert","Please fill all fields!");return;}
+  const stus=await fetch("/api/students").then(r=>r.json());
+  const stu=stus.find(s=>s.user_id===sid);
+  const cmp=CU.role==="company"?(await fetch("/api/companies").then(r=>r.json())).find(c=>c.user_id===CU.id):null;
+  const company_name=cmp?cmp.company_name:"SMD College";
+  const joiningF=new Date(joining).toLocaleDateString("en-GB");
+  const r=await fetch("/api/offer",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({student_id:sid,student_name:stu.name,company_name,role,ctc,joining_date:joiningF})}).then(r=>r.json());
+  if(r.ok){closeModal("offer");toast("🏆 Offer letter issued! Email sent to student 📧","success");loadOffers();loadDashboard();}
+  else showMAlert("offerAlert",r.msg);
+}
+
+// ── COMPANIES ──
+async function loadCompanies(){
+  const comps=await fetch("/api/companies").then(r=>r.json());
+  document.getElementById("compTbody").innerHTML=comps.map(c=>`
+    <tr>
+      <td><div class="td-name-row"><div class="td-ava">${c.company_name[0]}</div><div class="td-bold">${c.company_name}</div></div></td>
+      <td>${c.industry||"—"}</td>
+      <td>${c.hr_name}</td>
+      <td style="font-size:12px;color:var(--text3)">${c.hr_email}</td>
+      <td><a href="${c.website}" target="_blank" style="color:var(--blue3);font-size:12px">${c.website?c.website.replace("https://",""):"—"}</a></td>
+      <td><span class="badge b-${c.status.toLowerCase()}">${c.status}</span></td>
+      <td>
+        ${c.status==="Pending"?`
+          <div class="act-row">
+            <button class="btn btn-green btn-sm" onclick="approveComp('${c.id}')">✅ Approve</button>
+            <button class="btn btn-red btn-sm" onclick="rejectComp('${c.id}')">❌ Reject</button>
+          </div>`:c.status==="Approved"?"<span style='color:var(--green);font-size:12px;font-weight:700'>Active</span>":"—"}
+      </td>
+    </tr>`).join("");
+}
+async function approveComp(cid){
+  await fetch(`/api/companies/${cid}/approve`,{method:"PUT"});
+  toast("Company approved! Email sent 📧","success");loadCompanies();checkPendingApprovals();
+}
+async function rejectComp(cid){
+  await fetch(`/api/companies/${cid}/reject`,{method:"PUT"});
+  toast("Company rejected","warn");loadCompanies();checkPendingApprovals();
+}
+async function checkPendingApprovals(){
+  if(CU?.role!=="admin") return;
+  const comps=await fetch("/api/companies").then(r=>r.json());
+  const pending=comps.filter(c=>c.status==="Pending").length;
+  const badge=document.getElementById("pendingBadge");
+  if(pending>0){badge.style.display="inline";badge.textContent=pending;}
+  else badge.style.display="none";
+}
+
+// ── STUDENTS ──
+async function loadStudents(){
+  const filter=document.getElementById("stuFilter")?.value||"";
+  const stus=await fetch("/api/students").then(r=>r.json());
+  allStudentsCache=stus;
+  const filtered=filter==="placed"?stus.filter(s=>s.placed):filter==="unplaced"?stus.filter(s=>!s.placed):stus;
+  document.getElementById("stuTbody").innerHTML=filtered.map(s=>`
+    <tr>
+      <td><div class="td-name-row"><div class="td-ava">${s.name[0]}</div><div>
+        <div class="td-bold">${s.name}</div>
+        <div style="font-size:11px;color:var(--text3)">${s.email}</div>
+      </div></div></td>
+      <td>${s.branch||"—"}</td>
+      <td style="color:var(--green);font-weight:700">${s.cgpa}</td>
+      <td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.skills||"—"}</td>
+      <td><span class="badge ${s.placed?"b-selected":"b-applied"}">${s.placed?"✅ Placed":"Unplaced"}</span></td>
+      <td class="td-bold">${s.placed_company||"—"}</td>
+      <td style="color:var(--green);font-weight:700">${s.placed_ctc||"—"}</td>
+    </tr>`).join("");
+}
+
+// ── NOTICES ──
+async function loadNotices(){
+  const notices=await fetch("/api/notices").then(r=>r.json());
+  const cont=document.getElementById("noticesContainer");
+  const empty=document.getElementById("noticesEmpty");
+  if(!notices.length){cont.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";
+  cont.innerHTML=notices.map(n=>`
+    <div class="notice-card ${n.priority==="High"?"high-priority":""}">
+      <div class="notice-icon">${n.priority==="High"?"🔴":"📢"}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+          <div class="notice-title">${n.title}</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            ${n.priority==="High"?`<span class="badge b-high">High</span>`:""}
+            ${CU.role==="admin"?`<button class="btn btn-red btn-sm" onclick="deleteNotice('${n.id}')">🗑️</button>`:""}
+          </div>
+        </div>
+        <div class="notice-content">${n.content}</div>
+        <div class="notice-meta">📅 ${n.created_on} · By ${n.posted_by}</div>
+      </div>
+    </div>`).join("");
+}
+async function submitNotice(){
+  const title=document.getElementById("noticeTitle").value.trim();
+  const content=document.getElementById("noticeContent").value.trim();
+  if(!title||!content){showMAlert("noticeAlert","Fill all fields!");return;}
+  await fetch("/api/notices",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title,content,priority:document.getElementById("noticePriority").value})});
+  closeModal("notice");toast("Notice posted!","success");loadNotices();
+}
+async function deleteNotice(nid){
+  await fetch(`/api/notices/${nid}`,{method:"DELETE"});
+  toast("Notice deleted","warn");loadNotices();
+}
+
+// ── PROFILE ──
+async function loadProfile(){
+  const s=await fetch("/api/session").then(r=>r.json());
+  const cont=document.getElementById("profileContent");
+  if(s.role==="student"){
+    cont.innerHTML=`
+      <div class="profile-hero">
+        <div class="profile-ava">${s.name[0]}</div>
+        <div>
+          <div class="profile-name">${s.name}</div>
+          <div class="profile-meta">
+            <span>🎓 ${s.branch||"—"}</span>
+            <span>📊 CGPA: ${s.cgpa||"—"}</span>
+            <span>${s.placed?"✅ Placed at "+s.placed_company:"🔍 Seeking Placement"}</span>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            ${s.linkedin?`<a href="https://${s.linkedin}" target="_blank" class="btn btn-blue btn-sm">LinkedIn</a>`:""}
+            ${s.github?`<a href="https://${s.github}" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>`:""}
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        ${infoCard("💻 Skills",s.skills||"Not added")}
+        ${infoCard("🚀 Projects",s.projects||"Not added")}
+        ${infoCard("🏢 Internships",s.internships||"Not added")}
+        ${infoCard("🏆 Achievements",s.achievements||"Not added")}
+      </div>`;
+    // Pre-fill edit modal
+    document.getElementById("pBranch").value=s.branch||"";
+    document.getElementById("pCgpa").value=s.cgpa||"";
+    document.getElementById("pSkills").value=s.skills||"";
+    document.getElementById("pProjects").value=s.projects||"";
+    document.getElementById("pInternships").value=s.internships||"";
+    document.getElementById("pAchievements").value=s.achievements||"";
+    document.getElementById("pLinkedin").value=s.linkedin||"";
+    document.getElementById("pGithub").value=s.github||"";
+  } else {
+    cont.innerHTML=`
+      <div class="profile-hero">
+        <div class="profile-ava">${s.name[0]}</div>
+        <div>
+          <div class="profile-name">${s.name}</div>
+          <div class="profile-meta">
+            <span>📧 ${s.email}</span>
+            <span>🔑 ${s.role}</span>
+          </div>
+        </div>
+      </div>`;
+  }
+}
+function infoCard(title,val){
+  return `<div class="dash-card"><div class="dash-card-title">${title}</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${val}</div></div>`;
+}
+async function saveProfile(){
+  const data={branch:document.getElementById("pBranch").value,cgpa:document.getElementById("pCgpa").value,skills:document.getElementById("pSkills").value,projects:document.getElementById("pProjects").value,internships:document.getElementById("pInternships").value,achievements:document.getElementById("pAchievements").value,linkedin:document.getElementById("pLinkedin").value,github:document.getElementById("pGithub").value};
+  await fetch("/api/students/profile",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
+  closeModal("profile");toast("Profile updated!","success");loadProfile();
+}
+
+// ── REPORTS ──
+async function loadReports(){
+  const data=await fetch("/api/stats").then(r=>r.json());
+  document.getElementById("reportStats").innerHTML=`
+    ${stBox("rgba(16,185,129,0.12)","✅",data.placed,"Students Placed","total","#10b981")}
+    ${stBox("rgba(239,68,68,0.1)","🔍",data.not_placed,"Unplaced","students","#ef4444")}
+    ${stBox("rgba(37,99,235,0.12)","📊",data.avg_cgpa||"—","Avg CGPA","overall","#60a5fa")}
+    ${stBox("rgba(245,158,11,0.12)","📈",data.placed+data.not_placed>0?Math.round((data.placed/(data.placed+data.not_placed))*100)+"%":"0%","Placement %","rate","#f59e0b")}`;
+  const maxB=Math.max(...(data.branch_stat||[]).map(s=>s.total),1);
+  document.getElementById("branchChart").innerHTML=(data.branch_stat||[]).map(s=>`
+    <div class="stat-bar-row">
+      <div class="sbl">${s.branch}</div>
+      <div class="sbt"><div class="sbf" style="width:${(s.total/maxB)*100}%"></div></div>
+      <div class="sbc">${s.placed_count||0}/${s.total}</div>
+    </div>`).join("")||"<div style='color:var(--text3);font-size:13px'>No data yet.</div>";
+  document.getElementById("companyChart").innerHTML=(data.comp_stat||[]).map(c=>`
+    <div class="stat-bar-row">
+      <div class="sbl">${c.company_name||"—"}</div>
+      <div class="sbt"><div class="sbf" style="width:100%"></div></div>
+      <div class="sbc">${c.hired}</div>
+    </div>`).join("")||"<div style='color:var(--text3);font-size:13px'>No placements yet.</div>";
+}
+
+// ── MODAL UTILS ──
+function openModal(type){
+  if(type==="offer"&&(CU.role==="admin"||CU.role==="company")){
+    fetch("/api/students").then(r=>r.json()).then(stus=>{
+      const sel=document.getElementById("offerStudent");
+      sel.innerHTML=`<option value="">-- Select Student --</option>`+stus.filter(s=>!s.placed).map(s=>`<option value="${s.user_id}">${s.name} — CGPA: ${s.cgpa} | ${s.branch}</option>`).join("");
+    });
+  }
+  if(type==="drive"){
+    document.getElementById("editDriveId").value="";
+    document.getElementById("saveDriveBtn").textContent="🚀 Post Drive";
+    document.getElementById("driveAlert").style.display="none";
+  }
+  document.getElementById("modal-"+type).classList.add("show");
+}
+function closeModal(type){document.getElementById("modal-"+type).classList.remove("show");}
+function showMAlert(id,msg){const el=document.getElementById(id);el.textContent="⚠️ "+msg;el.className="m-alert error";el.style.display="block";}
+function filterTbl(tbodyId,val){
+  const rows=document.getElementById(tbodyId).querySelectorAll("tr");
+  rows.forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(val.toLowerCase())?"":"none";});
+}
+
+async function logout() {
+  try {
+
+    await fetch("/logout");
+
+    CU = null;
+
+    document.getElementById("appWrap").style.display = "none";
+    document.getElementById("authPage").style.display = "flex";
+
+    toast("Logged out successfully!", "success");
+
+    setTimeout(() => {
+      location.reload();
+    }, 500);
+
+  } catch(err) {
+    console.error(err);
+    toast("Logout failed!", "error");
+  }
+}
+// Click outside to close
+document.querySelectorAll(".modal-ov").forEach(o=>{o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("show");});});
+
+initApp();
+</script>
+</body>
+</html>
